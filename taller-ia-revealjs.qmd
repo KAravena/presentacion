@@ -1,0 +1,653 @@
+﻿---
+title: "IA al servicio pedagógico"
+subtitle: "Herramientas prácticas para el trabajo docente (uso crítico y situado)"
+author: "Taller para docentes"
+lang: es-CL
+
+format:
+  revealjs:
+    theme: taller-ciae.scss
+    transition: slide
+    transition-speed: slow
+    slide-number: true
+    show-slide-number: print
+    center: false
+    navigation-mode: linear
+    code-line-numbers: true
+    preview-links: true
+    chalkboard: false
+    footer: "IA al servicio pedagógico — herramientas prácticas para el trabajo docente"
+    highlight-style: github
+    width: 1280
+    height: 720
+    incremental: true
+
+editor: source
+body-classes: kathy
+---
+
+<!-- ===== CSS LOCAL Y AISLADO A ESTE QMD ===== -->
+<style>
+.reveal { font-size: 34px; line-height: 1.32; color:#111827; }
+
+/* Utilidad para alinear una slide arriba */
+.kathy .align-top{
+  display:flex !important; flex-direction:column; justify-content:flex-start;
+}
+
+/* Tarjeta del objetivo */
+.kathy .objective-card{
+  border-left:6px solid #D91A2A; background:rgba(217,26,42,.08);
+  border-radius:12px; padding:14px 16px; box-shadow:0 6px 18px rgba(17,24,39,.06);
+}
+
+/* Columna con mapa de iconos (más compacta) */
+.kathy .icon-map{ font-size:.94em; line-height:1.28; }
+.kathy .icon-map ul{ list-style:none; margin:0; padding:0; }
+.kathy .icon-map li{ padding:.42rem .2rem .55rem; border-top:1px solid rgba(17,24,39,.10); }
+.kathy .icon-map li:first-child{ border-top:0; }
+.kathy .icon-map li > strong:first-child{ color:#D91A2A; font-weight:800; letter-spacing:.2px; }
+.kathy .icon-map code{
+  font-size:.88em; background:#F3F4F6; border:1px solid #E5E7EB; padding:.06em .35em; border-radius:6px;
+}
+
+/* Bloque de atajos pequeño */
+.kathy .quick-mini{ font-size:.92em; line-height:1.26; }
+.kathy .quick-mini li{ margin:.26rem 0; }
+.kathy .quick-mini code{ font-size:.9em; }
+
+/* Anotaciones (hotspots) sobre imagen */
+.kathy .ui-annot{ position:relative; width:100%; }
+.kathy .ui-annot .ui-img{ display:block; width:100%; height:auto; border-radius:10px; }
+.kathy .hotspot{
+  position:absolute; border:3px solid #D91A2A; border-radius:12px;
+  background:rgba(217,26,42,.10); box-shadow:0 8px 24px rgba(0,0,0,.18);
+  pointer-events:none; opacity:0; visibility:hidden; transition:opacity .18s ease;
+}
+.kathy .hotspot::after{
+  content:attr(data-label); position:absolute; top:6px; left:8px;
+  display:inline-block; padding:.14rem .45rem; font-weight:800; line-height:1;
+  background:#fff; color:#111827; border:2px solid #D91A2A; border-radius:999px;
+  box-shadow:0 4px 10px rgba(0,0,0,.08); font-size:clamp(0.62rem,1.3vw,0.9rem);
+}
+.kathy .reveal .fragment.visible.hotspot{ opacity:1; visibility:visible; }
+
+/* Imagen barra vertical: sombra y límite de altura */
+.kathy img[alt="Barra de actividad VS Code"]{
+  display:block; margin:.2rem auto 0; border-radius:12px;
+  box-shadow:0 8px 22px rgba(0,0,0,.12); max-height:70vh;
+}
+
+/* ===== Botones (scope: solo este QMD) ===== */
+.kathy .btn{
+  display:inline-flex; align-items:center; gap:.45rem;
+  padding:.38rem .80rem;
+  border:2px solid transparent; border-radius:10px;
+  font-weight:700; letter-spacing:.01em; line-height:1;
+  text-decoration:none !important; cursor:pointer;
+  transition:transform .12s ease, box-shadow .12s ease,
+             background .2s ease, border-color .2s ease, color .2s ease;
+  box-shadow:0 3px 8px rgba(17,24,39,.06);
+  color:inherit;
+}
+.kathy .btn:hover{ transform:translateY(-1px); }
+.kathy .btn:active{ transform:translateY(0); }
+.kathy .btn:focus{ outline:0; box-shadow:0 0 0 3px rgba(217,26,42,.25); }
+
+/* Tamaño pequeño */
+.kathy .btn-sm{ padding:.30rem .68rem; font-size:.90em; border-radius:9px; }
+
+/* Variantes */
+.kathy .btn-primary{
+  background:#D91A2A; border-color:#D91A2A; color:#fff !important;
+}
+.kathy .btn-primary:hover{
+  background:#b51622; border-color:#b51622; color:#fff !important;
+}
+.kathy .btn-outline-secondary{
+  background:transparent; border-color:#E5E7EB; color:#111827 !important;
+}
+.kathy .btn-outline-secondary:hover{
+  background:#F3F4F6; border-color:#D1D5DB;
+}
+
+/* Espaciado cuando hay varios botones seguidos */
+.kathy .mb-3 .btn{ margin-right:.35rem; }
+
+/* ===== Tarjeta (card) mínima para la imagen y texto ===== */
+.kathy .card{
+  border:1px solid #E5E7EB; background:#fff; border-radius:14px; overflow:hidden;
+}
+.kathy .shadow-sm{ box-shadow:0 8px 22px rgba(17,24,39,.08); }
+.kathy .card-img-top{ display:block; width:100%; height:auto; }
+.kathy .card .card-body{ padding:.8rem 1rem; }
+
+/* ===== Centrar los H2 de cada slide (título principal) ===== */
+.kathy .reveal .slides section > h2:first-child{
+  text-align: center;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Si usas .align-top, sigue arriba pero centrado */
+.kathy .reveal .slides section.align-top > h2:first-child{
+  text-align: center;
+}
+
+.kathy .icon-map.icon-xs{
+  font-size: clamp(0.98rem, 1.22vw, 1.10rem);
+  line-height: 1.26;
+}
+.kathy .icon-map.icon-xs li{
+  padding: .30rem .12rem .36rem;
+}
+.kathy .icon-map.icon-xs code{
+  font-size: .92em;
+}
+
+/* Pantallas de poca altura: aún grande pero sin desbordar */
+@media (max-height: 760px){
+  .kathy .icon-map.icon-xs{
+    font-size: clamp(0.92rem, 1.15vw, 1.04rem);
+    line-height: 1.24;
+  }
+}
+
+/* ===== Quick mini (columna derecha) — versión compacta ===== */
+.kathy .quick-mini{
+  font-size: 0.80em;
+  line-height: 1.26;
+}
+.kathy .quick-mini h3,
+.kathy .quick-mini h4{
+  margin-top: 0;
+  margin-bottom: .45rem;
+  font-weight: 800;
+  font-size: 1.05em;
+  text-align: left;
+}
+.kathy .quick-mini ul{ margin: 0; padding-left: 1rem; }
+.kathy .quick-mini li{ margin: .26rem 0; }
+.kathy .quick-mini code{
+  font-size: .90em;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  padding: .02em .32em;
+  border-radius: 6px;
+}
+@media (max-height: 760px){
+  .kathy .quick-mini{ font-size: 0.78em; line-height: 1.24; }
+}
+
+/* ===== Compatibilidad con tu deck (clases existentes) ===== */
+.kathy .title-card{
+  max-width: 980px;
+  margin: 0 auto;
+  background: rgba(255,255,255,.78);
+  border: 1px solid rgba(229,231,235,.85);
+  border-radius: 18px;
+  padding: 1.2rem 1.35rem;
+  box-shadow: 0 18px 36px rgba(0,0,0,.10);
+}
+.kathy .subtitle-strong{ margin: 0 0 .25rem; }
+.kathy .lead{ margin: .25rem 0 .8rem; color:#374151; }
+.kathy .meta{ display:flex; flex-wrap:wrap; gap:.45rem; justify-content:center; }
+.kathy .tag{
+  display:inline-block;
+  padding:.18rem .55rem;
+  border:1px solid #E5E7EB;
+  border-radius:999px;
+  font-weight:700;
+  font-size:.85rem;
+  background: rgba(255,255,255,.85);
+}
+.kathy .callout.subtle{
+  background: #FAFAFA;
+  border-left-color: #D1D5DB;
+}
+.kathy .panel.danger{
+  border-color: rgba(217,26,42,.35);
+  background: rgba(217,26,42,.06);
+}
+
+/* Si alguien deja grid2 en alguna slide, lo soportamos */
+.kathy .grid2{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  align-items: start;
+}
+@media (max-width: 900px){
+  .kathy .grid2{ grid-template-columns: 1fr; }
+}
+</style>
+
+## IA al servicio pedagógico {background-image="images/museo-bg.jpg" background-size="cover" background-opacity="0.22" .title-slide}
+
+<div class="title-card">
+<p class="subtitle-strong"><strong>Herramientas prácticas para el trabajo docente</strong></p>
+
+<p class="lead">
+Uso crítico y situado de IA como apoyo (no reemplazo) del criterio profesional.
+</p>
+
+<div class="meta">
+  <span class="tag">marco teórico</span>
+  <span class="tag">oportunidades y límites</span>
+  <span class="tag">resguardos</span>
+  <span class="tag">prompting básico</span>
+</div>
+</div>
+
+::: notes
+Abrir con una pregunta rápida:
+- "¿Qué te consume más tiempo hoy: planificar, adaptar materiales, evaluar/retroalimentar u organización administrativa?"
+Aclarar foco: ahorrar tiempo sin bajar calidad, con resguardos (privacidad + verificación + pertinencia pedagógica).
+:::
+
+
+
+## {.title-slide #portada data-background-image="images\museo-bg.jpg" data-background-size="cover" data-background-position="center" data-background-opacity="0.80"}
+
+<div class="cover">
+  <img src="images copy\museo-bg.jpg" class="cover-logo" alt="LISA" />
+
+  <span class="cover-kicker">Herramientas prácticas para el trabajo docente</span>
+
+  <h1 class="cover-title">IA al servicio pedagógico </h1>
+
+:::{=html}
+<div class="cover-pill">
+  <div class="line-2"> Escuela de verano · -MEGM</div>
+</div>
+:::
+
+  <div class="cover-meta">Santiago, 12 de enero del 2026</div>
+
+  <a class="btn" href="https://github.com/lisa-coes" target="_blank" rel="noopener">
+    <span class="gh" aria-hidden="true"></span> Repositorio en GitHub
+  </a>
+</div>
+
+
+---
+
+## Objetivos del taller
+
+Al finalizar, podrás:
+
+1. Identificar tareas docentes donde IA aporta valor (y dónde no).
+2. Explicar, a grandes rasgos, cómo funcionan los modelos generativos (para usarlos con criterio).
+3. Aplicar resguardos: privacidad, sesgos, verificación y control profesional.
+4. Diseñar prompts efectivos (rol, objetivo, contexto, formato, criterios/restricciones).
+5. Salir con 1 plantilla reutilizable (prompt + checklist).
+
+::: notes
+Conectar con “transferencia”: dejar plantillas reutilizables y un flujo simple (borrador → revisión → producto).
+:::
+
+---
+
+## Agenda sugerida (90 min)
+
+- 10 min Enfoque y principios de uso responsable  
+- 30 min Marco teórico (sin tecnicismos): IA, LLM, Transformer, límites  
+- 15 min Riesgos: sesgos, privacidad, verificación  
+- 15 min Prompting: receta + plantilla  
+- 10 min Actividad guiada (un ejercicio)  
+- 10 min Cierre: checklist + recursos + encuesta  
+
+<div class="callout subtle">
+Si tu taller dura 60 min: principios (8), marco teórico (18), resguardos (10), prompting (14), actividad (7), cierre (3).
+</div>
+
+::: notes
+Si el grupo es grande: parejas/tríos con 1 caso por equipo. Si es pequeño: 1 ejemplo colectivo y 1 iteración.
+:::
+
+---
+
+## Principios de trabajo (uso docente)
+
+<div class="grid-2">
+<div class="panel">
+<h3>IA como apoyo</h3>
+<ul>
+<li>Genera borradores y alternativas</li>
+<li>Acelera tareas repetitivas</li>
+<li>Ayuda a organizar información</li>
+</ul>
+</div>
+
+<div class="panel">
+<h3>Responsabilidad profesional</h3>
+<ul>
+<li>Revisión humana obligatoria</li>
+<li>Verificación de lo factual</li>
+<li>Alineación a OA y propósito pedagógico</li>
+</ul>
+</div>
+</div>
+
+<div class="callout">
+Idea fuerza: la IA acelera el <em>primer borrador</em>; tú defines el producto final.
+</div>
+
+---
+
+## Cuándo usar IA (y cuándo no)
+
+<div class="grid-2">
+<div class="panel">
+<h3>Útil para</h3>
+<ul>
+<li>Planificaciones y secuencias</li>
+<li>Adaptación de textos y guías</li>
+<li>Rúbricas y criterios observables</li>
+<li>Retroalimentación preliminar (borrador)</li>
+<li>Síntesis/organización (sin datos sensibles)</li>
+</ul>
+</div>
+
+<div class="panel danger">
+<h3>Evitar o extremar resguardos</h3>
+<ul>
+<li>Datos sensibles de estudiantes/familias</li>
+<li>Decisiones evaluativas sin revisión</li>
+<li>Diagnósticos o situaciones personales</li>
+<li>Hechos “duros” sin verificar</li>
+<li>Cuando falta contexto (salida genérica)</li>
+</ul>
+</div>
+</div>
+
+<div class="callout subtle">
+Regla práctica: si no lo escribirías en un correo institucional, no lo pegues en un prompt.
+</div>
+
+::: notes
+Dar ejemplos concretos de “dato sensible”: nombres completos, RUT, diagnósticos, dirección, apoderados, conflictos.
+:::
+
+---
+
+## Sección teórica: qué entendemos por IA hoy {background-image="images/ai-abstract.jpg" background-size="cover" background-opacity="0.10"}
+
+---
+
+## IA (definición operativa para este taller)
+
+En este taller, **IA** refiere a técnicas que permiten a computadores realizar tareas que solemos llamar “inteligentes”:
+
+- reconocer patrones  
+- clasificar y recomendar  
+- resumir y traducir  
+- **generar texto** (IA generativa)
+
+<div class="callout subtle">
+Idea clave: la IA no es una “mente”. Produce resultados <strong>probabilísticos</strong> a partir de patrones aprendidos desde datos.
+</div>
+
+---
+
+## Tres distinciones útiles (sin tecnicismos)
+
+- **IA general**: inteligencia humana “para todo”. Hoy no existe.
+- **IA específica/aplicada**: sistemas para tareas concretas (detección, clasificación, recomendación).
+- **IA generativa**: crea contenido nuevo (texto/imagen/audio) combinando patrones aprendidos.
+
+<div class="callout">
+En este taller trabajamos principalmente con IA generativa para <strong>texto</strong>, como apoyo al juicio pedagógico.
+</div>
+
+---
+
+## Cómo “aprende” (intuición)
+
+**Aprendizaje automático (machine learning):** modelos que ajustan parámetros para reducir error usando muchos ejemplos.
+
+1. recibe ejemplos (datos)  
+2. intenta predecir una salida  
+3. compara con el resultado esperado  
+4. ajusta parámetros internos  
+5. repite muchas veces  
+
+<div class="callout subtle">
+No “comprende” como una persona: optimiza patrones estadísticos que funcionan bien en promedio.
+</div>
+
+---
+
+## Modelos de lenguaje (LLM): qué hacen realmente
+
+Un **modelo de lenguaje** aprende a producir texto coherente prediciendo el “siguiente fragmento” más probable dado un contexto.
+
+- el texto se convierte en unidades (tokens)  
+- el modelo calcula probabilidades y genera salida  
+- puede sonar convincente incluso cuando está equivocado  
+
+<div class="callout">
+Idea clave: un LLM es un “completador de texto” muy sofisticado, guiable por instrucciones (prompts).
+</div>
+
+::: notes
+Conectar con docencia: “se parece a un estudiante que responde bien el formato, pero puede inventar si no tiene base”.
+:::
+
+---
+
+## Por qué puede “alucinar”
+
+Como el objetivo es **coherencia** (no verdad), el modelo puede:
+
+- completar con “relleno plausible”  
+- mezclar fuentes/fechas/nombres  
+- inventar referencias  
+
+<div class="callout subtle">
+Regla práctica: usar IA para borradores y alternativas; <strong>verificar</strong> lo factual y decidir pedagógicamente.
+</div>
+
+---
+
+## Transformer y atención (por qué mejoró tanto)
+
+Los modelos modernos de lenguaje usan arquitectura **Transformer** (2017), basada en **auto-atención**: pondera qué partes del texto son más relevantes para producir la salida.
+
+![](assets/transformer.png){fig-alt="Arquitectura general tipo Transformer con bloques de atención." width=880}
+
+<div class="callout subtle">
+Atención mejora coherencia y contexto; no garantiza verdad.
+</div>
+
+---
+
+## Limitaciones estructurales (para uso crítico)
+
+- no distingue verdad/falsedad por sí mismo  
+- depende del contexto: prompts vagos → salidas genéricas  
+- puede quedar desactualizado o incompleto  
+- no conoce tu curso: requiere tu contexto pedagógico (sin datos sensibles)  
+
+<div class="callout">
+Buen uso: borradores + alternativas + organización. Riesgo: delegar criterio o copiar sin revisar.
+</div>
+
+---
+
+## Sesgos, brechas y efectos en educación
+
+- **sesgos**: puede reproducir estereotipos presentes en datos  
+- **brechas**: acceso, conectividad, apoyo institucional  
+- **estandarización**: riesgo de homogeneizar actividades  
+- **dependencia**: riesgo de desplazar reflexión pedagógica  
+
+<div class="callout subtle">
+Uso situado: acuerdos institucionales, propósito pedagógico y revisión profesional.
+</div>
+
+---
+
+## Privacidad y resguardo (piso mínimo)
+
+No ingresar datos sensibles o identificatorios:
+
+- nombres completos, RUT, direcciones, teléfonos  
+- diagnósticos, antecedentes de salud, situaciones familiares  
+- cualquier dato que permita identificar a una persona  
+
+<div class="callout subtle">
+Si necesitas contexto real, anonimiza: “estudiante A / estudiante B” y describe sin identificar.
+</div>
+
+::: notes
+Conectar con prácticas: copiar/pegar trabajos con nombres, pantallazos con lista de curso, informes PIE, etc.
+:::
+
+---
+
+## Verificación rápida (30–60 segundos)
+
+Cuando la IA entregue algo “factual” (definiciones, cifras, normativa, historia):
+
+1. **Señala qué parte es verificable** (hechos/fechas/autores)  
+2. **Contrasta en 2 fuentes** (sitio oficial, texto del curso, documento institucional)  
+3. **Ajusta el producto** (si no se puede verificar, no se usa como hecho)  
+
+<div class="callout">
+La IA ayuda a redactar; la validación sigue siendo responsabilidad profesional.
+</div>
+
+---
+
+## Puente: por qué el prompting importa {background-image="images/writing.jpg" background-size="cover" background-opacity="0.10"}
+
+---
+
+## Prompting como “consigna profesional”
+
+Si el modelo responde por probabilidad, el **prompt** funciona como consigna:
+
+- define tarea y propósito  
+- aporta contexto relevante  
+- pide un formato utilizable  
+- impone criterios y restricciones  
+- reduce ambigüedad y errores  
+
+<div class="callout">
+Un buen prompt se parece a una buena consigna de aula: clara, con criterios y con límites.
+</div>
+
+---
+
+## Receta de prompting (5 piezas)
+
+1) **Rol**: “Actúa como…”  
+2) **Objetivo**: “Necesito…”  
+3) **Contexto**: nivel, OA, tiempo, recursos, diversidad (sin datos identificatorios)  
+4) **Formato**: tabla, bullets, pauta, rúbrica  
+5) **Criterios/restricciones**: DUA, lenguaje, evaluación, no inventar, pedir preguntas  
+
+<div class="callout subtle">
+Si falta información, el prompt debe pedir preguntas antes de asumir.
+</div>
+
+---
+
+## Plantilla de prompt (copiar/pegar)
+
+```text
+Actúa como [ROL]. Necesito [OBJETIVO] para [CURSO/NIVEL] sobre [TEMA].
+
+Contexto: OA o propósito, tiempo disponible, recursos, características del grupo
+(sin datos identificatorios).
+
+Formato: entrega en [tabla/bullets] con secciones [inicio-desarrollo-cierre], e incluye:
+- 1 evaluación formativa breve
+- 2 apoyos DUA (acceso y participación)
+
+Criterios: lenguaje claro, actividades observables, coherencia con OA.
+Restricciones: no inventes datos; si falta info, pregunta antes de asumir.
+```
+
+::: notes
+Sugerir guardar como “snippet” o en un doc. Repetir idea: especificación > inspiración.
+:::
+
+---
+
+## Demostración breve (cómo iterar)
+
+Iteración 1: pedir un borrador funcional
+
+Iteración 2: ajustar a contexto (tiempo, recursos, nivel)
+
+Iteración 3: pedir mejoras: evaluación, adaptaciones, instrucciones
+
+<div class="callout subtle">En prompts: menos “inspiración”, más “especificación”.</div>
+
+::: notes
+Hacer ejemplo: “clase 45 min” → “ajústala a 30 min sin perder OA” → “agrega 2 apoyos DUA”.
+:::
+
+---
+
+## Actividad guiada (10 min)
+
+En parejas o tríos, elijan una tarea:
+
+A) Planificación de una clase (45 min)
+B) Adaptación de una guía (lectura) para 2 niveles
+C) Borrador de rúbrica (4 niveles) para una actividad
+
+Producto esperado: 1 prompt bien escrito + 1 salida revisada (borrador mejorado).
+
+<div class="callout">Regla: no usar datos identificatorios. Si hace falta contexto, lo describen sin nombres.</div>
+
+---
+
+## Checklist de resguardos (para cerrar)
+
+- ¿Incluí datos sensibles? (si sí → eliminar/anonimizar)
+- ¿La salida contiene “hechos” no verificados? (si sí → contrastar)
+- ¿Está alineado al OA/propósito?
+- ¿El lenguaje es pertinente y respetuoso?
+- ¿El producto final tiene tu voz profesional?
+
+<div class="callout subtle">Cierra con una mejora concreta: “¿qué cambiaría yo para mi curso real?”</div>
+
+---
+
+## Encuesta final (6–8 min)
+
+- ¿Qué tarea probarás primero con IA?
+- ¿Qué resguardo te parece más importante?
+- ¿Qué necesitas (apoyo institucional, tiempo, ejemplos)?
+- Evalúa el taller (1–5) y deja un comentario breve.
+
+::: notes
+Si hay formulario (Google/Microsoft), proyectarlo aquí. Si no, usar papel o mentimeter.
+:::
+
+---
+
+## Recursos y enlaces (para profundizar)
+
+- Museo de la Educación Gabriela Mistral (sitio oficial)
+- UNESCO: Guidance on generative AI in education and research
+- UNESCO: AI competency framework for teachers
+- OECD (PDF): Preparing teachers for digital education
+- Ciudadanía Digital MINEDUC (guías y recursos)
+
+<div class="callout subtle">Sugerencia: define 1 norma de equipo (“IA para borradores + verificación + no datos sensibles”) y pruébala 2 semanas.</div>
+
+---
+
+## Créditos (imagen de fondo)
+
+- Fondo “Museo de la Educación Gabriela Mistral (patio)”: Wikimedia Commons (descargar y guardar como images/museo-bg.jpg).
+
+::: notes
+Si se usan fotos libres, agregar fuente/licencia en créditos finales.
+:::

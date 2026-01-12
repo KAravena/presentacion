@@ -1,0 +1,591 @@
+---
+format:
+  revealjs:
+    theme: taller-ciae.scss
+    transition: slide
+    transition-speed: slow
+    slide-number: true
+    show-slide-number: print
+editor: source  
+body-classes: kathy  
+---
+
+
+<!-- ===== CSS LOCAL Y AISLADO A ESTE QMD ===== -->
+<style>
+.reveal { font-size: 34px; line-height: 1.32; color:#111827; }
+
+/* Utilidad para alinear una slide arriba */
+.kathy .align-top{
+  display:flex !important; flex-direction:column; justify-content:flex-start;
+}
+
+/* Tarjeta del objetivo */
+.kathy .objective-card{
+  border-left:6px solid #D91A2A; background:rgba(217,26,42,.08);
+  border-radius:12px; padding:14px 16px; box-shadow:0 6px 18px rgba(17,24,39,.06);
+}
+
+/* Columna con mapa de iconos (más compacta) */
+.kathy .icon-map{ font-size:.94em; line-height:1.28; }
+.kathy .icon-map ul{ list-style:none; margin:0; padding:0; }
+.kathy .icon-map li{ padding:.42rem .2rem .55rem; border-top:1px solid rgba(17,24,39,.10); }
+.kathy .icon-map li:first-child{ border-top:0; }
+.kathy .icon-map li > strong:first-child{ color:#D91A2A; font-weight:800; letter-spacing:.2px; }
+.kathy .icon-map code{
+  font-size:.88em; background:#F3F4F6; border:1px solid #E5E7EB; padding:.06em .35em; border-radius:6px;
+}
+
+/* Bloque de atajos pequeño */
+.kathy .quick-mini{ font-size:.92em; line-height:1.26; }
+.kathy .quick-mini li{ margin:.26rem 0; }
+.kathy .quick-mini code{ font-size:.9em; }
+
+/* Anotaciones (hotspots) sobre imagen */
+.kathy .ui-annot{ position:relative; width:100%; }
+.kathy .ui-annot .ui-img{ display:block; width:100%; height:auto; border-radius:10px; }
+.kathy .hotspot{
+  position:absolute; border:3px solid #D91A2A; border-radius:12px;
+  background:rgba(217,26,42,.10); box-shadow:0 8px 24px rgba(0,0,0,.18);
+  pointer-events:none; opacity:0; visibility:hidden; transition:opacity .18s ease;
+}
+.kathy .hotspot::after{
+  content:attr(data-label); position:absolute; top:6px; left:8px;
+  display:inline-block; padding:.14rem .45rem; font-weight:800; line-height:1;
+  background:#fff; color:#111827; border:2px solid #D91A2A; border-radius:999px;
+  box-shadow:0 4px 10px rgba(0,0,0,.08); font-size:clamp(0.62rem,1.3vw,0.9rem);
+}
+.kathy .reveal .fragment.visible.hotspot{ opacity:1; visibility:visible; }
+
+/* Imagen barra vertical: sombra y límite de altura */
+.kathy img[alt="Barra de actividad VS Code"]{
+  display:block; margin:.2rem auto 0; border-radius:12px;
+  box-shadow:0 8px 22px rgba(0,0,0,.12); max-height:70vh;
+}
+
+/* ===== Botones (scope: solo este QMD) ===== */
+.kathy .btn{
+  display:inline-flex; align-items:center; gap:.45rem;
+  padding:.38rem .80rem;
+  border:2px solid transparent; border-radius:10px;
+  font-weight:700; letter-spacing:.01em; line-height:1;
+  text-decoration:none !important; cursor:pointer;
+  transition:transform .12s ease, box-shadow .12s ease,
+             background .2s ease, border-color .2s ease, color .2s ease;
+  box-shadow:0 3px 8px rgba(17,24,39,.06);
+  color:inherit;
+}
+.kathy .btn:hover{ transform:translateY(-1px); }
+.kathy .btn:active{ transform:translateY(0); }
+.kathy .btn:focus{ outline:0; box-shadow:0 0 0 3px rgba(217,26,42,.25); }
+
+/* Tamaño pequeño */
+.kathy .btn-sm{ padding:.30rem .68rem; font-size:.90em; border-radius:9px; }
+
+/* Variantes */
+.kathy .btn-primary{
+  background:#D91A2A; border-color:#D91A2A; color:#fff !important;
+}
+.kathy .btn-primary:hover{
+  background:#b51622; border-color:#b51622; color:#fff !important;
+}
+.kathy .btn-outline-secondary{
+  background:transparent; border-color:#E5E7EB; color:#111827 !important;
+}
+.kathy .btn-outline-secondary:hover{
+  background:#F3F4F6; border-color:#D1D5DB;
+}
+
+/* Espaciado cuando hay varios botones seguidos */
+.kathy .mb-3 .btn{ margin-right:.35rem; }
+
+/* ===== Tarjeta (card) mínima para la imagen y texto ===== */
+.kathy .card{
+  border:1px solid #E5E7EB; background:#fff; border-radius:14px; overflow:hidden;
+}
+.kathy .shadow-sm{ box-shadow:0 8px 22px rgba(17,24,39,.08); }
+.kathy .card-img-top{ display:block; width:100%; height:auto; }
+.kathy .card .card-body{ padding:.8rem 1rem; }
+
+/* ===== Centrar los H2 de cada slide (título principal) ===== */
+.kathy .reveal .slides section > h2:first-child{
+  text-align: center;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Si usas .align-top, sigue arriba pero centrado */
+.kathy .reveal .slides section.align-top > h2:first-child{
+  text-align: center;
+}
+
+.kathy .icon-map.icon-xs{
+  font-size: clamp(0.98rem, 1.22vw, 1.10rem); /* antes máx 0.98 → ahora 1.10 */
+  line-height: 1.26;
+}
+.kathy .icon-map.icon-xs li{
+  padding: .30rem .12rem .36rem;
+}
+.kathy .icon-map.icon-xs code{
+  font-size: .92em;
+}
+
+/* Pantallas de poca altura: aún grande pero sin desbordar */
+@media (max-height: 760px){
+  .kathy .icon-map.icon-xs{
+    font-size: clamp(0.92rem, 1.15vw, 1.04rem);
+    line-height: 1.24;
+  }
+}
+
+/* ===== Quick mini (columna derecha) — versión compacta “como antes” ===== */
+.kathy .quick-mini{
+  font-size: 0.80em;        /* antes solía ser ~0.74–0.92; elegimos un punto medio cómodo */
+  line-height: 1.26;
+}
+.kathy .quick-mini h3,
+.kathy .quick-mini h4{
+  margin-top: 0;
+  margin-bottom: .45rem;
+  font-weight: 800;
+  font-size: 1.05em;        /* título un poco más chico que el resto de la slide */
+  text-align: left;         /* no heredamos centrado de h2 */
+}
+.kathy .quick-mini ul{ margin: 0; padding-left: 1rem; }
+.kathy .quick-mini li{ margin: .26rem 0; }
+.kathy .quick-mini code{
+  font-size: .90em;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  padding: .02em .32em;
+  border-radius: 6px;
+}
+
+/* Ajuste si la pantalla tiene poca altura: aún más compacto */
+@media (max-height: 760px){
+  .kathy .quick-mini{ font-size: 0.78em; line-height: 1.24; }
+}
+
+
+</style>
+
+## Que veremos? {.align-top}
+
+::: columns
+::: column
+::: {.objective-card}
+
+1. ¿Qué es la IA y cómo funciona?
+2. Claves de prompt engineering docente
+3. Herramientas prácticas para el trabajo docente
+4. IA e inclusión educativa
+5. Privacidad, sesgos y brechas de acceso
+6. Buenas prácticas y pasos pequeños para empezar
+7. Extras  
+
+:::
+:::
+::: column
+::: {.nonincremental}
+![](assets/qr.png){fig-alt="qr" width="85%" style="border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,.18);"}
+
+:::
+:::
+:::
+
+
+## ¿Qué es la IA y cómo funciona?
+
+![](images/flujo-herramientas.png)
+
+
+::: {style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;"}
+#
+
+![](assets/ia1.png){width="70%"}
+:::
+
+::: {style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;"}
+# Machine lerning 
+
+![](images/ML.png){width="70%"}
+:::
+
+::: {style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;"}
+# Redes neuronales artificiales
+
+![](assets/ann1.png){width="70%"}
+:::
+
+::: {style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;"}
+# 
+
+![](images/1.png){width="70%"}
+:::
+
+::: {style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;"}
+# 
+
+![](assets/ann.png){width="70%"}
+:::
+
+
+::: {style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;"}
+# 
+
+![](assets/AA.png){width="70%"}
+:::
+
+::: {style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;"}
+# 
+
+![](assets/transformer.png){width="70%"}
+:::
+
+
+::: {style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;"}
+# 
+
+![](assets/AA1.png){width="70%"}
+:::
+
+
+
+## Entonces... .{.compact-slide style="font-size:0.80em; line-height:1.05;"} 
+
+
+::: columns
+::: {.column width="55%"}
+
+
+
+<span class="kicker">intuición</span>
+<div class="panel">
+
+Produce resultados probabilísticos a partir de patrones aprendidos desde datos
+
+<strong>Cómo aprende un modelo (entrenamiento):</strong>
+
+<ol>
+  <li><strong>Recibe ejemplos</strong> (datos).</li>
+  <li><strong>Intenta predecir</strong> una salida.</li>
+  <li><strong>Compara</strong> su predicción con el <strong>resultado esperado</strong>.</li>
+  <li><strong>Ajusta parámetros internos</strong> para reducir el error.</li>
+  <li><strong>Repite</strong> este ciclo <strong>muchas veces</strong>.</li>
+</ol>
+
+<strong>**IA generativa**: crea contenido nuevo (texto/imagen/audio) combinando patrones aprendidos.</strong>
+
+</div>
+:::
+
+::: {.column width="45%"}
+![](https://wp.technologyreview.com/wp-content/uploads/2019/07/screen-shot-2019-07-26-at-2.05.21-pm-copy-10.png?fit=1456,818s){fig-alt="Código en laptop: aprendizaje iterativo (predicción y ajuste)" width="100%"}
+![](https://miro.medium.com/v2/resize:fit:720/format:webp/1*YtbHEFB7m_SJwFqmyiWTMg.png){fig-alt="Revisión de gráficos: comparación de resultados y trazabilidad" width="100%" .mt-3}
+:::
+:::
+
+
+## Que es un prompt? {.compact-slide style="font-size:0.75em; line-height:1.05;"} 
+
+<div class="panel">
+
+Un prompt es una instrucción, pregunta o texto que un usuario escribe para **comunicarse con un sistema de inteligencia artificial** (IA) y pedirle que realice una tarea, genere contenido (texto, imágenes) o responda una pregunta, siendo la claridad, el contexto y la especificidad clave para obtener **resultados precisos y útiles**.
+
+- define tarea y propósito  
+- aporta contexto relevante  
+- pide un formato utilizable  
+- impone criterios y restricciones  
+- reduce ambigüedad y errores  
+</div>
+
+![](assets/a3.png){fig-alt="qr" width="85%" style="border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,.18);"}
+
+
+::: {style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;"}
+# 
+
+![](assets/22.png){width="70%"}
+:::
+
+
+## por qué el prompting importa {.compact-slide style="font-size:0.75em; line-height:1.05;"} 
+
+::: columns
+::: {.column width="60%"}
+<span class="kicker">Prompt engineering</span>
+<div class="panel">
+
+Si el modelo responde por probabilidad, el **prompt** funciona como consigna:
+
+- define tarea y propósito  
+- aporta contexto relevante  
+- pide un formato utilizable  
+- impone criterios y restricciones  
+- reduce ambigüedad y errores  
+
+
+</div>
+
+<div class="callout mt-3">
+<strong>Idea fuerza:</strong> Un buen prompt se parece a una buena consigna de aula: clara, con criterios y con límites.
+</div>
+
+:::
+
+::: {.column width="40%"}
+![](data:image/png;base64,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){fig-alt="Repositorio y control de versiones (Git/GitHub en pantalla)" width="100%"}
+![](https://scontent.fscl38-1.fna.fbcdn.net/v/t39.30808-6/301057125_399108665695841_5549156782854434781_n.png?_nc_cat=107&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeG5IP3kseBEBPot37uCOo8CeG9kloP-O6N4b2SWg_47o6QQYn_EDf0kkuqwgMt9zkYjBCELrcRLOVtQGV3bIk6H&_nc_ohc=WmfPb-y8K5YQ7kNvwF8KTa3&_nc_oc=AdnPRWnQF8mrpKl37JjpoYbp6VkZLVWObTxBi_nVrCDugETnsaAhKrFIzHkrCEgjWOQ&_nc_zt=23&_nc_ht=scontent.fscl38-1.fna&_nc_gid=LFDJ4YudbE4DO_Lzxw15wA&oh=00_AfrIUIZvbhzZaZ4IPdEa_H4dZPx6_MX4wI5qZxPg2z4D_Q&oe=696AF631){fig-alt="Coordinación de equipo y trazabilidad: revisión conjunta de gráficos" width="100%" .mt-3}
+:::
+:::
+
+
+::: {style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;"}
+# 
+
+![](assets/A2.png){width="70%"}
+:::
+
+
+## Receta de prompting (5 piezas)
+
+1) **Rol**: “Actúa como…”  
+2) **Objetivo**: “Necesito…”  
+3) **Contexto**: nivel, OA, tiempo, recursos, diversidad (sin datos identificatorios)  
+4) **Formato**: tabla, bullets, pauta, rúbrica  
+5) **Criterios/restricciones**: DUA, lenguaje, evaluación, no inventar, pedir preguntas  
+
+<div class="callout subtle">
+Si falta información, el prompt debe pedir preguntas antes de asumir.
+</div>
+
+
+::: {style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;"}
+# Iterativo
+
+![](assets/AA3.png){width="70%"}
+:::
+
+## Ej de prompt 
+
+```text
+
+Actúa como especialista en evaluación auténtica y diseño instruccional  para educación escolar chilena. 
+Tu tarea es CONSTRUIR una rúbrica analítica (4 niveles) para evaluar un producto/ desempeño.
+
+1) CONTEXTO (usa exactamente esto)
+- Asignatura: Lenguaje y Comunicación
+- Nivel: 2° Medio
+- Unidad/Tema: Ensayo argumentativo sobre un problema público local (por ejemplo: convivencia, seguridad vial, medioambiente del barrio)
+- Producto evaluado: Ensayo argumentativo (700–900 palabras) + bibliografía breve (mín. 2 fuentes)
+- Tiempo de trabajo: 2 clases en aula + 1 semana para entrega
+- Propósito formativo: argumentar con tesis clara, evidencia pertinente y organización coherente; mejorar mediante retroalimentación
+- Restricciones del contexto: curso heterogéneo; al menos 2 estudiantes con necesidades de apoyo lector/escritor; no usar datos personales reales
+
+2) ENTREGABLES (formato obligatorio)
+A) Una rúbrica analítica en TABLA con:
+- 6 criterios (filas) y 4 niveles (columnas): “4 Avanzado”, “3 Competente”, “2 En desarrollo”, “1 Inicial”
+- Cada descriptor debe ser OBSERVABLE y ESPECÍFICO (evita “bueno/malo” o “adecuado” sin evidencia)
+- Incluye un “descriptor ancla” por nivel (frase corta que sintetice el nivel)
+- Debe poder aplicarse en 5 minutos por estudiante
+
+B) Ponderaciones:
+- Asigna ponderación (%) a cada criterio (total 100%)
+- Justifica en 3–4 líneas por qué esas ponderaciones están alineadas al propósito formativo
+
+C) Guía de uso para docentes (máx. 12 líneas):
+- Cómo aplicar la rúbrica
+- Cómo evitar sesgos al evaluar
+- Cómo registrar evidencias (citas textuales / marcas del texto)
+
+D) Retroalimentación lista para usar:
+- 4 plantillas de comentarios (una por nivel global) con espacios rellenables:
+  “Tu fortaleza principal es…”, “Para mejorar…”, “En la próxima versión…”
+- Incluye 2 sugerencias específicas de reescritura por nivel
+
+E) Adaptaciones (DUA) sin bajar el estándar:
+- 4 apoyos de acceso/participación (lectura y escritura) para el proceso
+- 2 alternativas de evidencia del aprendizaje (manteniendo criterios) SOLO si el estudiante lo requiere
+- Un mini-checklist de entrega para estudiantes (8 ítems, sí/no)
+
+3) CRITERIOS DE CALIDAD (obligatorios)
+- Alinea los criterios a: tesis/posicionamiento, evidencia y fuentes, razonamiento/contraargumento, organización, estilo académico, convenciones/forma.
+- Considera el riesgo de IA: incluye un criterio o nota de “integridad académica” (uso transparente de IA y citas) sin convertirlo en castigo automático.
+- Lenguaje: español claro, tono profesional, aplicable en Chile.
+- Evita referencias a normativa específica si no estás seguro; si necesitas una, pregunta.
+
+4) VERIFICACIÓN
+Antes de entregar, revisa que:
+- Ningún descriptor repita la misma idea en distintos criterios
+- Los niveles sean progresivos (cada nivel agrega o mejora algo)
+- No haya ambigüedad (“bien”, “mal”, “adecuado” sin evidencia)
+
+5) PREGUNTAS (solo si son imprescindibles)
+Si falta información crítica, haz MÁXIMO 3 preguntas al inicio. Si no, asume lo mínimo razonable y avanza.
+
+Comienza ahora.
+
+```
+## Herramientas prácticas {.compact-slide style="font-size:0.86em; line-height:1.12;"}
+
+::: columns
+::: {.column width="58%"}
+<div class="panel">
+
+<strong>Idea central</strong><br>
+La IA funciona como <strong>asistente de borradores</strong>: acelera el proceso, ordena ideas y explicita pasos y puede... crear más tiempo libre.<br><br>
+
+<strong>Regla</strong><br>
+La IA <strong>propone</strong>; el equipo docente <strong>revisa, corrige y decide</strong>.
+
+</div>
+
+:::
+
+::: {.column width="42%"}
+<div class="panel">
+
+<strong>Fortaleza clave</strong><br>
+<strong>Reduce el tiempo de producción</strong> y vuelve más eficiente el trabajo docente:
+
+<ul>
+  <li><strong>Administrativo</strong>: síntesis, actas, acuerdos/tareas, comunicaciones.</li>
+  <li><strong>Pedagógico</strong>: planificación, guías, bancos de ítems, rúbricas, feedback modelo.</li>
+</ul>
+
+</div>
+
+:::
+
+:::
+
+---
+
+## Qué apoya en la práctica {.compact-slide style="font-size:0.86em; line-height:1.12;"}
+
+::: columns
+::: {.column width="50%"}
+<div class="panel">
+
+<span class="kicker">Diseño pedagógico</span>
+
+<div class="stack mt-2">
+  <div class="chip"><strong>3.1 Planificación</strong><br><span class="muted">secuencias · inicio–desarrollo–cierre · tiempos · preguntas guía</span></div>
+  <div class="chip mt-2"><strong>3.2 Materiales</strong><br><span class="muted">guías/ejercicios · ejemplos · adaptación (más simple / más desafiante)</span></div>
+  <div class="chip mt-2"><strong>3.3 Diversificación</strong><br><span class="muted">guiada / intermedia / profundización · apoyos · canales</span></div>
+
+</div>
+</div>
+
+:::
+
+::: {.column width="50%"}
+<div class="panel">
+
+<span class="kicker">Trabajo docente cotidiano</span>
+
+<div class="stack mt-2">
+  <div class="chip"><strong>3.4 Organización</strong><br><span class="muted">resúmenes · acuerdos · comunicaciones · plantillas</span></div>
+  <div class="chip mt-2"><strong>3.5 Evaluación</strong><br><span class="muted">ítems · criterios · rúbricas claras · evaluaciones breves</span></div>
+  <div class="chip mt-2"><strong>3.6 Retroalimentación</strong><br><span class="muted">comentarios formativos: logro → mejora → próximo paso</span></div>
+</div>
+
+</div>
+
+:::
+:::
+
+<style>
+/* Mini-estilos locales (solo para esta diapo) */
+.kicker{
+  font-size:.82em;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  opacity:.75;
+}
+.stack{ margin-top:.4rem; }
+.chip{
+  padding:.7rem .85rem;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+}
+.muted{ opacity:.82; font-size:.95em; }
+</style>
+
+
+::: {style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;"}
+# Rubricas y evaluaciones
+
+![](assets/rubrica.png){width="70%"}
+:::
+
+
+
+## Resguardos {.compact-slide style="font-size:0.84em; line-height:1.12;"}
+
+<div class="panel">
+
+
+<strong>:</strong>
+<ul>
+  <li><strong>Coherencia curricular</strong> (OA–actividades–evaluación)</li>
+  <li><strong>Pertinencia</strong> (carga, dificultad, contexto)</li>
+  <li><strong>Inclusión</strong> (sin etiquetar ni segregar)</li>
+  <li><strong>Privacidad</strong>: no datos sensibles (RUT, diagnósticos, salud, nombres completos)</li>
+</ul>
+
+</div>
+
+
+
+
+
+
+## Desafío: borrador listo para usar {.compact-slide style="font-size:0.78em; line-height:1.08;"}
+
+
+**Objetivo del desafío:** armar una propuesta **lista para usar** sobre un tema que les sirva para su curso o algo que quieran probar. 
+
+**Regla del juego:** la IA solo **asiste borradores**. 
+
+El desafío es diseñar, en tiempo acotado, una propuesta lista para usar: planificar dos clases, construir una evaluación breve con su rúbrica, crear un material para estudiantes y redactar un correo.
+
+Se recomienda subir como referencia pautas, guías o actividades que ya hayan usado antes, para que la IA genere un borrador similar en estilo y estructura, que luego el equipo docente revisa y ajusta.
+
+
+![](assets/desafios.jpg){width="40%"}
+
+
+::: {style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;"}
+# Privacidad, sesgos y brechas de acceso
+
+![](assets/no.png){width="70%"}
+
+:::
+
+
+::: {style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;"}
+# Privacidad, sesgos y brechas de acceso
+
+![](assets/no1.png){width="70%"}
+
+:::
+
+
+::: {style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;"}
+# 
+
+![](https://b2990151.smushcdn.com/2990151/wp-content/uploads/2024/12/tess-ai-multi-ais-one-place-generative-ai-platform.png?lossy=1&strip=0&webp=1){width="70%"}
+
+:::
+
+
+
+
+## {.title-slide #portadafinal data-background-image="images copy/museo-bg.jpg" data-background-size="cover" data-background-position="center" data-background-opacity="0.80"}
+
+<div class="cover">
+  <img src="images copy/cover.png" class="cover-logo" alt="LISA" />
+</div>
