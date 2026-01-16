@@ -1,0 +1,11 @@
+{
+  "generated_at": "2026-01-16T15:05:37",
+  "run_dir": "D:\\CEP\\Dic - Boleanas y PDG\\PDG\\analisis\\salida_full_emb_soft10",
+  "docs_file": "D:\\CEP\\Dic - Boleanas y PDG\\PDG\\analisis\\salida_full_emb_soft10\\docs_with_topics_soft_outliers.csv.gz",
+  "topic_info_file": "D:\\CEP\\Dic - Boleanas y PDG\\PDG\\analisis\\salida_full_emb_soft10\\topic_info_soft10_clean_v2.csv",
+  "topic_map_file": "D:\\CEP\\Dic - Boleanas y PDG\\PDG\\analisis\\salida_full_emb_soft10\\topic_map.csv",
+  "out_dir": "D:\\CEP\\Dic - Boleanas y PDG\\PDG\\analisis\\salida_full_emb_soft10\\html_report_v2",
+  "n_docs": 19464,
+  "n_outliers": 1947,
+  "n_topics": 24
+}
